@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .alsrtInfo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+        }
+        .profPrompt_test{
+            padding: 30px 10px;
+            width: 480px;
+            overflow: hidden;
+            line-height: 28px;
+            color: #000000;
+            position: absolute;
+            top: 85%;
+            left: 50%;
+            font-size: 40px;
+            font-weight: bold;
+            font-family: Consolas;
+            opacity: 1;
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="app" v-model="color">
+        <div :style="SetBg" @mousemove="mousemove" @mousedown="mousedown">
+            <h3>{{X}},{{Y}},{{Z}}</h3>
+        </div>
+        <div class="alsrtInfo" :style="{display: displayStsates}" ref="alertMsg">
+            <div class="profPrompt_test">{{aletMsg}}</div>
+        </div>
+    </div>
+  <script src="js/vue.js"></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+            color : '',
+            absW : 255 / document.documentElement.clientWidth,
+            absH : 255 / document.documentElement.clientHeight,
+            X : 0,
+            Y : 0,
+            Z : 0,
+            aletMsg : '',
+            displayStsates: 'none'
+        }
+      },
+      methods : {
+          mousemove(e) {
+              this.X = Math.floor(e.offsetX * this.absW)
+              this.Y = Math.floor(e.offsetY * this.absH)
+              this.Z = Math.abs(this.X - this.Y)
+              this.color = "RGB(" + this.X + "," + this.Y + "," + this.Z + ")"
+          },
+          mousedown() {
+              navigator.clipboard.writeText(this.color);
+              this.alertDia("Copy Success!")
+          },
+          alertDia (msg) {
+              this.displayStsates = 'block'
+              this.aletMsg = msg
+              window.setTimeout(() => {
+                  this.displayStsates = 'none'
+              }, 500)
+          },
+      },
+      computed : {
+          SetBg() {
+              return {
+                  'background-color' : this.color
+              }
+          }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
